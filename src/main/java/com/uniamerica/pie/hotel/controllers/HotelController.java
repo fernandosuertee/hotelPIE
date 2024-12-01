@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ public class HotelController {
     @Autowired
     private QuartoRepository quartoRepository;
     
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> cadastrarHotel(@Valid @RequestBody Hotel hotel) {
         try {
@@ -46,6 +48,7 @@ public class HotelController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Hotel> buscarHotelPorId(@PathVariable Long id) {
         Hotel hotel = hotelService.buscarPorId(id);
@@ -53,6 +56,7 @@ public class HotelController {
         return ResponseEntity.ok(hotel);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<Hotel>> listarTodosOsHoteis() {
         List<Hotel> hoteis = hotelService.listarTodos();
@@ -62,13 +66,14 @@ public class HotelController {
         return ResponseEntity.ok(hoteis);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Hotel> atualizarHotel(@PathVariable Long id, @Valid @RequestBody Hotel hotelAtualizado) {
         Hotel hotel = hotelService.atualizarHotel(id, hotelAtualizado);
         return ResponseEntity.ok(hotel);
     }
 
-    
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarHotel(@PathVariable Long id) {
         hotelService.deletarHotel(id);

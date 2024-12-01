@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
   
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class ReservaController {
     @Autowired
     private ReservaService reservaService;
 
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('USER')")
     @PostMapping
     public ResponseEntity<?> cadastrarReserva(@Valid @RequestBody Reserva reserva) {
         try {
@@ -40,12 +42,14 @@ public class ReservaController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('USER')")
     @GetMapping
     public ResponseEntity<List<Reserva>> listarTodasAsReservas() {
         List<Reserva> reservas = reservaService.listarTodos();
         return ResponseEntity.ok(reservas);
     }
 
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('USER')")
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarReservaPorId(@PathVariable Long id) {
         try {
@@ -56,6 +60,7 @@ public class ReservaController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('USER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarReserva(@PathVariable Long id, @Valid @RequestBody Reserva reservaAtualizada) {
         try {
@@ -66,6 +71,7 @@ public class ReservaController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarReserva(@PathVariable Long id) {
         try {
