@@ -24,6 +24,11 @@ public class LoginService {
 
 
 	public String logar(Login login) {
+		
+		var data=repository.findByUsername(login.getUsername());
+		System.out.println(data.get().getPassword());
+		
+		
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						login.getUsername(),

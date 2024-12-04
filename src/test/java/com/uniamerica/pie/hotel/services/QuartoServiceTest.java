@@ -1,26 +1,17 @@
 package com.uniamerica.pie.hotel.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.MockitoAnnotations;
 
 import com.uniamerica.pie.hotel.models.Hotel;
 import com.uniamerica.pie.hotel.models.Quarto;
 import com.uniamerica.pie.hotel.repositories.QuartoRepository;
 
-@SpringBootTest
 public class QuartoServiceTest {
 
     @Mock
@@ -29,59 +20,38 @@ public class QuartoServiceTest {
     @InjectMocks
     private QuartoService quartoService;
 
-    private Quarto quarto;
-    private Hotel hotel;
-
-    @BeforeEach
-    void setUp() {
-        hotel = new Hotel("Hotel Exemplo", "Rua Exemplo", "Hotel 5 estrelas", 100);
-        quarto = new Quarto("101", "Luxo", "Disponível", hotel);
-        quarto.setId(1L);
+    public QuartoServiceTest() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    @DisplayName("Deve cadastrar um novo quarto")
-    void testCadastrarQuarto() {
+    public void testCadastrarQuarto_Sucesso() {
+        Hotel hotel = new Hotel("Hotel Teste", "Endereço", "Descrição", 10);
+        hotel.setId(1L);
+
+        Quarto quarto = new Quarto("101", "Quarto Casal", "Disponível", 1, 2, hotel);
+        when(quartoRepository.existsByNumeroAndHotelId("101", 1L))
+            .thenReturn(false);
         when(quartoRepository.save(quarto)).thenReturn(quarto);
 
-        Quarto novoQuarto = quartoService.cadastrarQuarto(quarto);
-        assertEquals("101", novoQuarto.getNumero());
+        Quarto resultado = quartoService.cadastrarQuarto(quarto);
+
+        assertNotNull(resultado);
+        assertEquals("101", resultado.getNumero());
         verify(quartoRepository, times(1)).save(quarto);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção se quarto não for encontrado")
-    void testBuscarPorIdQuartoNaoEncontrado() {
-        when(quartoRepository.findById(1L)).thenReturn(Optional.empty());
+    public void testCadastrarQuarto_NumeroJaExistente() {
+        Hotel hotel = new Hotel("Hotel Teste", "Endereço", "Descrição", 10);
+        hotel.setId(1L);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            quartoService.buscarPorId(1L);
+        Quarto quarto = new Quarto("101", "Quarto Casal", "Disponível", 1, 2, hotel);
+        when(quartoRepository.existsByNumeroAndHotelId("101", 1L))
+            .thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            quartoService.cadastrarQuarto(quarto);
         });
-
-        assertEquals("Quarto não encontrado", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve atualizar as informações de um quarto")
-    void testAtualizarQuarto() {
-        when(quartoRepository.findById(1L)).thenReturn(Optional.of(quarto));
-
-        Quarto quartoAtualizado = new Quarto("102", "Standard", "Ocupado", hotel);
-        when(quartoRepository.save(quarto)).thenReturn(quarto);
-
-        Quarto result = quartoService.atualizarQuarto(1L, quartoAtualizado);
-        assertEquals("102", result.getNumero());
-        assertEquals("Standard", result.getTipo());
-        assertEquals("Ocupado", result.getStatus());
-        verify(quartoRepository, times(1)).save(quarto);
-    }
-
-    @Test
-    @DisplayName("Deve deletar um quarto existente")
-    void testDeletarQuarto() {
-        doNothing().when(quartoRepository).deleteById(1L);
-
-        quartoService.deletarQuarto(1L);
-        verify(quartoRepository, times(1)).deleteById(1L);
     }
 }

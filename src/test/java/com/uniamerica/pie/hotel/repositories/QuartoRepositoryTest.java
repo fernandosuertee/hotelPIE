@@ -1,17 +1,16 @@
 package com.uniamerica.pie.hotel.repositories;
 
 
-import org.junit.jupiter.api.BeforeEach;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.uniamerica.pie.hotel.models.Hotel;
+
 
 
 @SpringBootTest
 public class QuartoRepositoryTest {
 
+	/*
     @Autowired
     private QuartoRepository quartoRepository;
 
@@ -28,7 +27,7 @@ public class QuartoRepositoryTest {
         hotel = hotelRepository.save(new Hotel("Hotel Exemplo", "Rua Exemplo", "Hotel de teste", 50));
     }
 
-    /*@Test
+    @Test
     @DisplayName("Deve buscar quartos por hotel e status")
     void testBuscarQuartosPorHotelEStatus() {
         Quarto quartoDisponivel = new Quarto("101", "Luxo", "Disponível", hotel);

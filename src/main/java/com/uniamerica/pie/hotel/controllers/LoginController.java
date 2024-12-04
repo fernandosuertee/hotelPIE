@@ -15,15 +15,17 @@ import com.uniamerica.pie.hotel.models.Login;
 import com.uniamerica.pie.hotel.services.LoginService;
 
 @RestController
-@RequestMapping("/api/login")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/")
+@CrossOrigin(origins = "*")
 public class LoginController {
 
 	@Autowired
 	private LoginService loginService;
 
-	@PostMapping
+	@PostMapping("login")
 	public ResponseEntity<String> logar(@RequestBody Login login) {
+		System.out.println("fernando");
+		
 		try {
 			return ResponseEntity.ok(loginService.logar(login));
 		}catch(AuthenticationException ex) {

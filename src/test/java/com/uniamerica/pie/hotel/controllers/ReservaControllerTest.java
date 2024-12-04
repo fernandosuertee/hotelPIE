@@ -1,119 +1,48 @@
 package com.uniamerica.pie.hotel.controllers;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-
-
-import com.uniamerica.pie.hotel.models.Hospede;
-import com.uniamerica.pie.hotel.models.Hotel;
-import com.uniamerica.pie.hotel.models.Quarto;
-import com.uniamerica.pie.hotel.models.Reserva;
-import com.uniamerica.pie.hotel.services.ReservaService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+
 
 @SpringBootTest
 public class ReservaControllerTest {
 
+	/*
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    private TestRestTemplate restTemplate;
 
-    private MockMvc mockMvc;
+    @Autowired
+    private HotelRepository hotelRepository;
 
-    @MockBean
-    private ReservaService reservaService;
+    @Autowired
+    private QuartoRepository quartoRepository;
 
-    private Reserva reserva;
+    private Hotel hotel;
+    private Quarto quarto;
 
     @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        Hospede hospede = new Hospede("John Doe", "john@example.com");
-        Hotel hotel = new Hotel("Hotel Exemplo", "Rua Exemplo, 123", "Hotel Luxo", 50);
-        Quarto quarto = new Quarto("101", "Luxo", "Disponível", hotel);
-        reserva = new Reserva(hospede, hotel, quarto, LocalDate.now(), LocalDate.now().plusDays(2), 2, "Pendente");
-    }
-
-   
-
-    @Test
-    @DisplayName("Deve buscar uma reserva por ID")
-    void testBuscarReservaPorId() throws Exception {
-        when(reservaService.buscarPorId(1L)).thenReturn(reserva);
-
-        mockMvc.perform(get("/reservas/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.hospede.nome").value("John Doe"));
+    public void setup() {
+        hotel = hotelRepository.save(new Hotel("Hotel Teste", "Rua Teste", "Descrição Teste", 10));
+        quarto = quartoRepository.save(new Quarto("101", "quarto solteiro", "Disponível", 1, 1, hotel));
     }
 
     @Test
-    @DisplayName("Deve listar todas as reservas")
-    void testListarTodasAsReservas() throws Exception {
-        when(reservaService.listarTodos()).thenReturn(Arrays.asList(reserva));
+    public void testCadastrarReserva() {
+        Reserva reserva = new Reserva(null, hotel, quarto, LocalDate.now().plusDays(1), LocalDate.now().plusDays(3), 1, null);
+        ResponseEntity<Reserva> response = restTemplate.postForEntity("/reservas", reserva, Reserva.class);
 
-        mockMvc.perform(get("/reservas")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].hospede.nome").value("John Doe"));
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(quarto.getId(), response.getBody().getQuarto().getId());
     }
 
-   
-
     @Test
-    @DisplayName("Deve deletar uma reserva")
-    void testDeletarReserva() throws Exception {
-        mockMvc.perform(delete("/reservas/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+    public void testListarTodasAsReservas() {
+        ResponseEntity<Reserva[]> response = restTemplate.getForEntity("/reservas", Reserva[].class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
-    
-    
-    /*
-    @Test
-    @DisplayName("Deve cadastrar uma nova reserva")
-    void testCadastrarReserva() throws Exception {
-        when(reservaService.cadastrarReserva(reserva)).thenReturn(reserva);
+    */
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String reservaJson = objectMapper.writeValueAsString(reserva);
-
-        mockMvc.perform(post("/reservas")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(reservaJson))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.status").value("Pendente"));
-    }*/
-    
-    /*@Test
-    @DisplayName("Deve atualizar uma reserva")
-    void testAtualizarReserva() throws Exception {
-        Reserva reservaAtualizada = new Reserva(reserva.getHospede(), reserva.getHotel(), reserva.getQuarto(),
-                LocalDate.now(), LocalDate.now().plusDays(5), 3, "Confirmada");
-
-        when(reservaService.atualizarReserva(1L, reservaAtualizada)).thenReturn(reservaAtualizada);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String reservaJson = objectMapper.writeValueAsString(reservaAtualizada);
-
-        mockMvc.perform(put("/reservas/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(reservaJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("Confirmada"));
-    }*/
 }

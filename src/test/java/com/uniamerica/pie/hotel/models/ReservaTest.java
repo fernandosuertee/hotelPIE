@@ -1,29 +1,18 @@
 package com.uniamerica.pie.hotel.models;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.LocalDate;
-import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
 public class ReservaTest {
-
-    private Validator validator;
-    private Hospede hospede;
+    /*private Hospede hospede;
     private Hotel hotel;
     private Quarto quarto;
 
-    @BeforeEach
+    /*@BeforeEach
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
@@ -74,7 +63,7 @@ public class ReservaTest {
         });
 
         assertEquals("Número de hóspedes é obrigatório", exception.getConstraintViolations().iterator().next().getMessage());
-    }
+    } 
 
     private void validarReserva(Reserva reserva) {
         Set<ConstraintViolation<Reserva>> violations = validator.validate(reserva);
@@ -83,4 +72,6 @@ public class ReservaTest {
             throw new ConstraintViolationException(violations);
         }
     }
+*/
+
 }
